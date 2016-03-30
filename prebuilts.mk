@@ -17,7 +17,7 @@
 # - "user" build variant
 prebuilts_criteria := $(JENKINS_URL)$(filter user,$(TARGET_BUILD_VARIANT))
 ifneq ($(prebuilts_criteria),)
-ANDROID_BUILD_FROM_SOURCE := true
+ANDROID_NO_PREBUILT_PATHS := $(TOP)
 endif # prebuilts_criteria
 prebuilts_criteria :=
 
