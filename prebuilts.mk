@@ -75,6 +75,10 @@ $(foreach project, $(prebuilts_projects),\
   )\
 )
 
+prebuilts_avail := $(shell find $(PREBUILTS_TARGET_BINARIES) $(PREBUILTS_HOST_BINARIES) -type f 2> /dev/null | wc -l)
+prebuilts_used := 0
+using-prebuilts = $(eval prebuilts_used := $(shell echo $$(( $(prebuilts_used) + 1 )) ))
+
 ifneq ($(prebuilts_makefiles),)
 # Export a target that can be used to populate new prebuilts binaries.
 .PHONY: prebuilts
@@ -89,6 +93,11 @@ $(foreach mk,\
 $(eval $(call restore_vars))
 endif # prebuilts_makefiles
 
+$(info Using $(prebuilts_used)/$(prebuilts_avail) cached prebuilts.)
+
+using-prebuilts :=
+prebuilts_used :=
+prebuilts_avail :=
 prebuilts_projects :=
 prebuilts_makefiles :=
 PREBUILTS_HOST_BINARIES :=

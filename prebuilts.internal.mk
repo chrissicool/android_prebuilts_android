@@ -54,6 +54,7 @@ endif
 ifndef my_prebuilts_nonexistent
 ifndef LOCAL_PREBUILT_MODULE_FILE
 LOCAL_PREBUILT_MODULE_FILE := $(my_prebuilts_module_file)
+$(call using-prebuilts)
 endif
 endif
 
