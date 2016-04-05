@@ -27,12 +27,20 @@
 ifdef LOCAL_IS_HOST_MODULE
 my_prefix := HOST_
 my_build_prefix := HOST_
-my_arch_variant :=
+my_arch := ARCH
 else
 my_prefix := TARGET_
 my_build_prefix :=
-my_arch_variant := _VARIANT
+my_arch := CPU_VARIANT
 endif
+
+my_path := $(PREBUILTS_$(my_prefix)BINARIES)/$($(my_prefix)$(LOCAL_2ND_ARCH_VAR_PREFIX)$(my_arch))
+# Does this module depend on special variables?
+my_module_deps := $(call prebuilts_check_for, $(LOCAL_PATH), \
+    TARGET_DEVICE \
+    $(my_prefix)BUILD_VARIANT \
+    $(my_prefix)BUILD_TYPE \
+)
 
 # Get git revisions
 my_git_rev := $(shell cd $(LOCAL_PATH) && git rev-parse HEAD 2> /dev/null)
@@ -42,7 +50,7 @@ ifndef my_git_rev
 $(error $(LOCAL_PATH): Cannot determine Git revision for $(LOCAL_MODULE))
 endif
 
-my_prebuilts_module_file := $(PREBUILTS_$(my_prefix)BINARIES)/$(LOCAL_MODULE)-$($(my_prefix)ARCH$(my_arch_variant))-$(my_git_rev)$(LOCAL_MODULE_SUFFIX)
+my_prebuilts_module_file := $(my_path)/$(LOCAL_MODULE)-$(my_module_deps)$(my_git_rev)$(LOCAL_MODULE_SUFFIX)
 $(if $(wildcard $(my_prebuilts_module_file)),, \
   $(eval my_prebuilts_nonexistent := true) \
 )
@@ -75,6 +83,8 @@ my_git_dirty :=
 my_git_rev :=
 my_prebuilts_nonexistent :=
 my_prebuilts_module_file :=
-my_arch_variant :=
+my_module_deps :=
+my_path :=
+my_arch :=
 my_build_prefix :=
 my_prefix :=

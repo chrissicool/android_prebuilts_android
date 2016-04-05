@@ -24,8 +24,8 @@ prebuilts_criteria :=
 PREBUILTS_ROOT := $(call my-dir)
 PREBUILTS_MK_ROOT := $(PREBUILTS_ROOT)
 PREBUILTS_BINARIES := $(PREBUILTS_ROOT)
-PREBUILTS_TARGET_BINARIES := $(PREBUILTS_BINARIES)/target/$(TARGET_DEVICE)/$(TARGET_BUILD_VARIANT)
-PREBUILTS_HOST_BINARIES := $(PREBUILTS_BINARIES)/host/$(HOST_PREBUILT_TAG)
+PREBUILTS_TARGET_BINARIES := $(PREBUILTS_BINARIES)/target
+PREBUILTS_HOST_BINARIES := $(PREBUILTS_BINARIES)/host/$(HOST_OS)
 
 # Save a variable that contains a build system's makefile path.
 # Adjust the path to the makefile to $(PREBUILTS_ROOT).
@@ -60,6 +60,30 @@ define restore_vars
     PREBUILTS_DEFINITIONS_MODE := restore
     include $(PREBUILTS_ROOT)/prebuilts.definitions.mk
     PREBUILTS_DEFINITIONS_MODE :=
+endef
+
+# Check if special variables are used to build a module.
+# Outputs a list of the values of all special variables from
+# $(2) that the local module depends upon.
+#
+# Parameters:
+#   $(1):	LOCAL_PATH of the current module to check
+#   $(2):	List of make variables to check for.
+#
+# Example:
+#  $(call prebuilts_check_for, $(LOCAL_PATH), \
+#         TARGET_BUILD_VARIANT TARGET_BUILD_TYPE)
+#     -> userdebug-
+#  or -> userdebug-release-
+define prebuilts_check_for
+$(strip \
+    $(eval lst := ) \
+    $(foreach var, $(2), \
+        $(if $(shell find $(1) -name \*.mk | xargs grep $(var)), \
+            $(eval lst += $($(var))))) \
+    $(if $(subst $(space),-,$(strip $(lst))), \
+        $(subst $(space),-,$(strip $(lst)))-) \
+)
 endef
 
 # Create rule for a file in the prebuilts cache.
