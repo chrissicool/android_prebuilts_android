@@ -66,14 +66,8 @@ ifeq ($(strip $(LOCAL_MODULE_CLASS)), EXECUTABLES)
 include $(PREBUILTS_ORIGINAL_BUILD_$(my_build_prefix)EXECUTABLE)
 endif
 
-ifdef my_prebuilts_nonexistent
-
-# Create rules to populate this module into the prebuilt cache.
-$(my_prebuilts_module_file): $(LOCAL_BUILT_MODULE)
-	$(call copy-file-to-target-with-cp)
-
-prebuilts: $(my_prebuilts_module_file)
-
+ifndef LOCAL_PREBUILT_MODULE_FILE
+$(call prebuilts_cache_file, $(my_prebuilts_module_file), $(LOCAL_BUILT_MODULE))
 endif
 
 # Unset all used variables

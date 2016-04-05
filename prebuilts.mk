@@ -62,6 +62,16 @@ define restore_vars
     PREBUILTS_DEFINITIONS_MODE :=
 endef
 
+# Create rule for a file in the prebuilts cache.
+#
+# Parameters:
+#   $(1):	Prebuilts file to be cached
+#   $(2):	Built intermediate file
+define prebuilts_cache_file
+$(1): $(2) ; $$(call copy-file-to-target-with-cp)
+prebuilts: $(1)
+endef
+
 prebuilts_projects := \
     external/chromium_org \
     external/llvm
