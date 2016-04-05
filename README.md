@@ -37,9 +37,6 @@ Apply the following patch to ```build/core/main.mk```.
 ```
 # Usage
 
-Prebuilts are only enabled for engineering builds and userdebug builds.
-They are entirely disabled for user builds on purpose.
-
 On first-time use of the prebuilts system you need to popuate prebuilts.
 These will be used automatically in subsequent runs,
 even after you deleted the entire ```$OUT``` directory.
@@ -65,6 +62,11 @@ These repositories then can be used to prepopulate other build hosts via (local)
 It is recommended to re-populate prebuilts every now and then.
 Prebuilts will not be recompiled if not necessary.
 Prebuilts will not be used for modules that have another version than the prebuilt binary.
+
+The prebuilts cache is used during every build.
+If you want to build everything from source although a valid prebuilts cache exists,
+set the environemnt variable ```ANDROID_BUILD_FROM_SOURCE=true```.
+This is strongly recommended for continuous integration or release builds.
 
 # Hacking
 

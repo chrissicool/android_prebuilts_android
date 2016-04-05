@@ -12,15 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Check a number of conditions when _not_ to use prebuilts.
-# - CI builds (e.g. Jenkins)
-# - "user" build variant
-prebuilts_criteria := $(JENKINS_URL)$(filter user,$(TARGET_BUILD_VARIANT))
-ifneq ($(prebuilts_criteria),)
-ANDROID_NO_PREBUILT_PATHS := $(TOP)
-endif # prebuilts_criteria
-prebuilts_criteria :=
-
 PREBUILTS_ROOT := $(call my-dir)
 PREBUILTS_MK_ROOT := $(PREBUILTS_ROOT)
 PREBUILTS_BINARIES := $(PREBUILTS_ROOT)
