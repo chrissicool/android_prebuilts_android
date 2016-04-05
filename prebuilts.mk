@@ -34,8 +34,8 @@ PREBUILTS_HOST_BINARIES := $(PREBUILTS_BINARIES)/host/$(HOST_PREBUILT_TAG)
 # Parameters:
 #   $(1):	Makefile to adjust, e.g. BUILD_EXECUTABLE
 define save_var
-    $(eval PREBUILTS_ORIGINAL_$(1) := $($(1)))
-    $(eval $(1) := $(PREBUILTS_ROOT)/$(notdir $($(1))))
+    PREBUILTS_ORIGINAL_$(1) := $($(1))
+    $(1) := $(PREBUILTS_ROOT)/$(notdir $($(1)))
     $(if $(wildcard $($(1))),,$(error Cannot find prebuilts override for $(1) = $($(1))))
 endef
 
@@ -44,8 +44,8 @@ endef
 # Parameters:
 #   $(1):	Makefile to restore, e.g. BUILD_EXECUTABLE
 define restore_var
-    $(eval $(1) := $(PREBUILTS_ORIGINAL_$(1)))
-    $(eval $(PREBUILTS_ORIGINAL_$(1)) := )
+    $(1) := $(PREBUILTS_ORIGINAL_$(1))
+    $(PREBUILTS_ORIGINAL_$(1)) :=
 endef
 
 # Save and adjust all variables defined in prebuilts.definitions.mk.
