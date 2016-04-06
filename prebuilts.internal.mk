@@ -75,7 +75,7 @@ include $(PREBUILTS_ORIGINAL_BUILD_$(my_build_prefix)EXECUTABLE)
 endif
 
 ifndef LOCAL_PREBUILT_MODULE_FILE
-$(call prebuilts_cache_file, $(my_prebuilts_module_file), $(LOCAL_BUILT_MODULE))
+$(call prebuilts_cache_file, $(my_prebuilts_module_file), $(LOCAL_INSTALLED_MODULE))
 endif
 
 # Unset all used variables
