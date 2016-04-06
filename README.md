@@ -81,6 +81,5 @@ there should be no need to touch upstream code.
 
 Known TODOs are:
 
- * implement proper multiarch (arm64) support
  * implement support for host binaries
  * prebuild all binaries

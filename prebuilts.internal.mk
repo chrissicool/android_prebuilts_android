@@ -17,20 +17,16 @@
 # Define a reverse target for 'make prebuilts' if no prebuilt was found.
 #
 # Needed variables:
-#  - LOCAL_MODULE_SUFFIX
-#  - LOCAL_MODULE_CLASS
 #  - LOCAL_IS_HOST_MODULE
+#  - my_prefix
 #
 # Defines:
-#  - LOCAL_PREBUILT_MODULE_FILE
+#  - LOCAL_PREBUILT_MODULE_FILE (optional, if exists)
+#  - my_prebuilts_module_file == LOCAL_PREBUILT_MODULE_FILE (mandatory)
 
 ifdef LOCAL_IS_HOST_MODULE
-my_prefix := HOST_
-my_build_prefix := HOST_
 my_arch := ARCH
 else
-my_prefix := TARGET_
-my_build_prefix :=
 my_arch := CPU_VARIANT
 endif
 
@@ -66,25 +62,10 @@ $(call using-prebuilts)
 endif
 endif
 
-# Include the original build system makefile.
-ifeq ($(strip $(LOCAL_MODULE_CLASS)), SHARED_LIBRARIES)
-include $(PREBUILTS_ORIGINAL_BUILD_$(my_build_prefix)SHARED_LIBRARY)
-endif
-ifeq ($(strip $(LOCAL_MODULE_CLASS)), EXECUTABLES)
-include $(PREBUILTS_ORIGINAL_BUILD_$(my_build_prefix)EXECUTABLE)
-endif
-
-ifndef LOCAL_PREBUILT_MODULE_FILE
-$(call prebuilts_cache_file, $(my_prebuilts_module_file), $(LOCAL_INSTALLED_MODULE))
-endif
-
 # Unset all used variables
 my_git_dirty :=
 my_git_rev :=
 my_prebuilts_nonexistent :=
-my_prebuilts_module_file :=
 my_module_deps :=
 my_path :=
 my_arch :=
-my_build_prefix :=
-my_prefix :=

@@ -12,12 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ifeq ($(strip $(LOCAL_MODULE_SUFFIX)),)
-LOCAL_MODULE_SUFFIX := $(TARGET_SHLIB_SUFFIX)
-endif
+include $(PREBUILTS_ORIGINAL_BUILD_SHARED_LIBRARY)
 
-ifeq ($(strip $(LOCAL_MODULE_CLASS)),)
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+ifndef LOCAL_PREBUILT_MODULE_FILE
+$(eval $(call prebuilts_cache_file, $(my_prebuilts_module_file), $(LOCAL_INSTALLED_MODULE)))
 endif
-
-include $(PREBUILTS_MK_ROOT)/prebuilts.internal.mk
