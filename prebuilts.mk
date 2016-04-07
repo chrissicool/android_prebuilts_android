@@ -103,6 +103,8 @@ $(foreach project, $(prebuilts_projects),\
 # These hooks are used in upstream makefiles before rule generation
 target-shared-library-hook = $(eval include $(PREBUILTS_MK_ROOT)/prebuilts.internal.mk)
 target-executable-hook = $(eval include $(PREBUILTS_MK_ROOT)/prebuilts.internal.mk)
+host-shared-library-hook = $(eval include $(PREBUILTS_MK_ROOT)/prebuilts.internal.mk)
+host-executable-hook = $(eval include $(PREBUILTS_MK_ROOT)/prebuilts.internal.mk)
 
 prebuilts_avail := $(shell find $(PREBUILTS_TARGET_BINARIES) $(PREBUILTS_HOST_BINARIES) -type f 2> /dev/null | wc -l)
 prebuilts_used := 0
@@ -126,6 +128,8 @@ $(info Using $(prebuilts_used)/$(prebuilts_avail) cached prebuilts.)
 
 target-shared-library-hook =
 target-executable-hook =
+host-shared-library-hook =
+host-executable-hook =
 
 using-prebuilts :=
 prebuilts_used :=

@@ -81,5 +81,4 @@ there should be no need to touch upstream code.
 
 Known TODOs are:
 
- * implement support for host binaries
  * prebuild all binaries

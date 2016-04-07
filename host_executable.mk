@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#$(eval $(call $(PREBUILTS_DEFINITIONS_MODE)_var,BUILD_STATIC_LIBRARY))
-$(eval $(call $(PREBUILTS_DEFINITIONS_MODE)_var,BUILD_SHARED_LIBRARY))
-$(eval $(call $(PREBUILTS_DEFINITIONS_MODE)_var,BUILD_EXECUTABLE))
-#$(eval $(call $(PREBUILTS_DEFINITIONS_MODE)_var,BUILD_HOST_STATIC_LIBRARY))
-$(eval $(call $(PREBUILTS_DEFINITIONS_MODE)_var,BUILD_HOST_SHARED_LIBRARY))
-$(eval $(call $(PREBUILTS_DEFINITIONS_MODE)_var,BUILD_HOST_EXECUTABLE))
-#$(eval $(call $(PREBUILTS_DEFINITIONS_MODE)_var,BUILD_PACKAGE))
+include $(PREBUILTS_ORIGINAL_BUILD_HOST_EXECUTABLE)
+
+ifndef LOCAL_PREBUILT_MODULE_FILE
+$(eval $(call prebuilts_cache_file, $(my_prebuilts_module_file), $(LOCAL_INSTALLED_MODULE)))
+endif
