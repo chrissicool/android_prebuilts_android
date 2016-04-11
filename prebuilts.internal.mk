@@ -30,6 +30,8 @@ else
 my_arch := CPU_VARIANT
 endif
 
+$(call prebuilts-count,prebuilts_avail)
+
 my_path := $(PREBUILTS_$(my_prefix)BINARIES)/$($(my_prefix)$(LOCAL_2ND_ARCH_VAR_PREFIX)$(my_arch))
 # Does this module depend on special variables?
 my_module_deps := $(call prebuilts_check_for, $(LOCAL_PATH), \
@@ -58,7 +60,7 @@ endif
 ifndef my_prebuilts_nonexistent
 ifndef LOCAL_PREBUILT_MODULE_FILE
 LOCAL_PREBUILT_MODULE_FILE := $(my_prebuilts_module_file)
-$(call using-prebuilts)
+$(call prebuilts-count,prebuilts_used)
 endif
 endif
 

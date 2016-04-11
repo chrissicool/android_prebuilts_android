@@ -106,9 +106,9 @@ target-executable-hook = $(eval include $(PREBUILTS_MK_ROOT)/prebuilts.internal.
 host-shared-library-hook = $(eval include $(PREBUILTS_MK_ROOT)/prebuilts.internal.mk)
 host-executable-hook = $(eval include $(PREBUILTS_MK_ROOT)/prebuilts.internal.mk)
 
-prebuilts_avail := $(shell find $(PREBUILTS_TARGET_BINARIES) $(PREBUILTS_HOST_BINARIES) -type f 2> /dev/null | wc -l)
+prebuilts_avail := 0
 prebuilts_used := 0
-using-prebuilts = $(eval prebuilts_used := $(shell echo $$(( $(prebuilts_used) + 1 )) ))
+prebuilts-count = $(eval $(1) := $(shell echo $$(( $($(1)) + 1 )) ))
 
 ifneq ($(prebuilts_makefiles),)
 # Export a target that can be used to populate new prebuilts binaries.
@@ -124,14 +124,14 @@ $(foreach mk,\
 $(eval $(call restore_vars))
 endif # prebuilts_makefiles
 
-$(info Using $(prebuilts_used)/$(prebuilts_avail) cached prebuilts.)
+$(info Using $(prebuilts_used) cached prebuilts; $(prebuilts_avail) modules scanned.)
 
 target-shared-library-hook =
 target-executable-hook =
 host-shared-library-hook =
 host-executable-hook =
 
-using-prebuilts :=
+prebuilts-count :=
 prebuilts_used :=
 prebuilts_avail :=
 prebuilts_projects :=
