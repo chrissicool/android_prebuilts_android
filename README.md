@@ -47,8 +47,9 @@ To populate prebuilts, run
  $ m prebuilts
 ```
 
-Prebuilts will be placed under ```$(TOP)/prebuilts/android/{target,host}/```.
-Each host OS and each target architecture have its own directory.
+Prebuilts will be placed under ```$(TOP)/prebuilts/android/{target,host}/``` by default.
+This target directory can be ovverridden with the ```PREBUILTS_BINARIES``` environemnt variable.
+Each host OS and each target architecture have its own directory tree.
 Every prebuilt module name contains the following information:
 
  - local module (mandatory)
@@ -57,7 +58,8 @@ Every prebuilt module name contains the following information:
  - Git SHA1 of source directory (mandatory)
 
 The directory structure is chosen so that you can create separate repositories for the binaries.
-These repositories then can be used to prepopulate other build hosts via (local) manifest.
+These repositories then can be used to prepopulate other build hosts
+via (local) manifest, rsync or shared NFS directories.
 
 It is recommended to re-populate prebuilts every now and then.
 Prebuilts will not be recompiled if not necessary.
