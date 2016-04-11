@@ -18,6 +18,13 @@ PREBUILTS_BINARIES := $(PREBUILTS_ROOT)
 PREBUILTS_TARGET_BINARIES := $(PREBUILTS_BINARIES)/target
 PREBUILTS_HOST_BINARIES := $(PREBUILTS_BINARIES)/host/$(HOST_OS)
 
+# List of build includes that we can provide prebuilts for.
+PREBULTS_OVERRIDE := \
+    BUILD_SHARED_LIBRARY \
+    BUILD_EXECUTABLE \
+    BUILD_HOST_SHARED_LIBRARY \
+    BUILD_HOST_EXECUTABLE
+
 # Save a variable that contains a build system's makefile path.
 # Adjust the path to the makefile to $(PREBUILTS_ROOT).
 # The prebuilt makefile can use the original one as PREBUILTS_ORIGINAL_$(1).
@@ -41,16 +48,12 @@ endef
 
 # Save and adjust all variables defined in prebuilts.definitions.mk.
 define save_vars
-    PREBUILTS_DEFINITIONS_MODE := save
-    include $(PREBUILTS_ROOT)/prebuilts.definitions.mk
-    PREBUILTS_DEFINITIONS_MODE :=
+    $(foreach inc, $(PREBULTS_OVERRIDE), $(eval $(call save_var,$(inc))))
 endef
 
 # Restore all variables defined in prebuilts.definitions.mk.
 define restore_vars
-    PREBUILTS_DEFINITIONS_MODE := restore
-    include $(PREBUILTS_ROOT)/prebuilts.definitions.mk
-    PREBUILTS_DEFINITIONS_MODE :=
+    $(foreach inc, $(PREBULTS_OVERRIDE), $(eval $(call restore_var,$(inc))))
 endef
 
 # Check if special variables are used to build a module.
@@ -136,6 +139,7 @@ prebuilts_used :=
 prebuilts_avail :=
 prebuilts_projects :=
 prebuilts_makefiles :=
+PREBUILTS_OVERRIDE :=
 PREBUILTS_HOST_BINARIES :=
 PREBUILTS_TARGET_BINARIES :=
 PREBUILTS_BINARIES :=
