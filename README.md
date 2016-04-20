@@ -55,7 +55,7 @@ Every prebuilt module name contains the following information:
  - local module (mandatory)
  - build variant (optional)
  - build type (optional)
- - Git SHA1 of source directory (mandatory)
+ - Git SHA1 of all descendant repositories (mandatory)
 
 The directory structure is chosen so that you can create separate repositories for the binaries.
 These repositories then can be used to prepopulate other build hosts

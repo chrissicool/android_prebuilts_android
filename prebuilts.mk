@@ -90,6 +90,80 @@ $(eval $(call copy-one-file,$(2),$(1)))
 prebuilts: $(1)
 endef
 
+# Print Git revision for a path.
+#
+# Parameters:
+#   $(1):	Path to .git directory
+define prebuilts-git-rev
+$(strip \
+  $(if $(filter %/.git,$(1)), \
+    $(eval my_git_path := $(1)/..), \
+    $(eval my_git_path := $(1)) \
+  ) \
+  $(shell cd $(my_git_path) && git rev-parse HEAD 2> /dev/null) \
+  $(eval my_git_path :=) \
+)
+endef
+
+# Print status if repository at given path is dirty,
+# no ouput otherwise.
+#
+# Parameters:
+#   $(1):	Path to .git directory
+define prebuilts-git-dirty
+$(strip \
+  $(if $(filter %/.git,$(1)), \
+    $(eval my_git_path := $(1)/..), \
+    $(eval my_git_path := $(1)) \
+  ) \
+  $(shell cd $(my_git_path) && git status -s 2> /dev/null | tail -n1) \
+  $(eval my_git_path :=) \
+)
+endef
+
+# List all git repositories below given path.
+#
+# Parameters:
+#   $(1):	Path
+define prebuilts-git-subdirs
+$(sort $(filter-out $(1)/.git,$(shell find $(1) -name .git -type d -prune)))
+endef
+
+# Get Git revisions of all repositories under a given path,
+# including the path itself.
+#
+# If there are multiple git repositories to consider, an artficial hash is
+# created. That avoids file names to become too long.
+#
+# Parameters:
+#   $(1):	Path
+define prebuilts-git-revs-for
+$(strip \
+  $(eval my_git_rev := $(call prebuilts-git-rev,$(1))) \
+  $(eval my_git_subdirs := $(call prebuilts-git-subdirs,$(1))) \
+  $(if $(my_git_subdirs), \
+    $(shell echo $(my_git_rev)$(foreach d,$(my_git_subdirs),$(call prebuilts-git-rev,$(d))) | \
+    				git hash-object --no-filters --stdin), \
+    $(my_git_rev) \
+  ) \
+  $(eval my_git_subdirs := ) \
+  $(eval my_git_rev := ) \
+)
+endef
+
+# Get dirty state of all repositories under a given path,
+# including the path itself.
+#
+# Parameters:
+#   $(1):	Path
+define prebuilts-git-dirty-for
+$(strip \
+  $(eval my_git_subdirs := $(call prebuilts-git-subdirs,$(1))) \
+  $(call prebuilts-git-dirty,$(1))$(foreach d,$(my_git_subdirs),$(call prebuilts-git-dirty,$(d))) \
+  $(eval my_git_subdirs := ) \
+)
+endef
+
 prebuilts_projects := \
     external/chromium_org \
     external/llvm

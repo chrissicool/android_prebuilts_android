@@ -41,14 +41,14 @@ my_module_deps := $(call prebuilts_check_for, $(LOCAL_PATH), \
 )
 
 # Get git revisions
-my_git_rev := $(shell cd $(LOCAL_PATH) && git rev-parse HEAD 2> /dev/null)
-my_git_dirty := $(strip $(shell cd $(LOCAL_PATH) && git status -s 2> /dev/null | tail -n1))
+my_git_revs := $(call prebuilts-git-revs-for,$(LOCAL_PATH))
+my_git_dirty := $(call prebuilts-git-dirty-for,$(LOCAL_PATH))
 
-ifndef my_git_rev
+ifndef my_git_revs
 $(error $(LOCAL_PATH): Cannot determine Git revision for $(LOCAL_MODULE))
 endif
 
-my_prebuilts_module_file := $(my_path)/$(LOCAL_MODULE)-$(my_module_deps)$(my_git_rev)$(LOCAL_MODULE_SUFFIX)
+my_prebuilts_module_file := $(my_path)/$(LOCAL_MODULE)-$(my_module_deps)$(my_git_revs)$(LOCAL_MODULE_SUFFIX)
 $(if $(wildcard $(my_prebuilts_module_file)),, \
   $(eval my_prebuilts_nonexistent := true) \
 )
@@ -66,7 +66,7 @@ endif
 
 # Unset all used variables
 my_git_dirty :=
-my_git_rev :=
+my_git_revs :=
 my_prebuilts_nonexistent :=
 my_module_deps :=
 my_path :=
