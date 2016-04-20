@@ -86,7 +86,7 @@ endef
 #   $(1):	Prebuilts file to be cached
 #   $(2):	Built intermediate file
 define prebuilts_cache_file
-$(1): $(2) ; $$(call copy-file-to-target-with-cp)
+$(eval $(call copy-one-file,$(2),$(1)))
 prebuilts: $(1)
 endef
 
