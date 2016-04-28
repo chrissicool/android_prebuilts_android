@@ -69,14 +69,32 @@ endef
 #         TARGET_BUILD_VARIANT TARGET_BUILD_TYPE)
 #     -> userdebug-
 #  or -> userdebug-release-
-define prebuilts_check_for
+define prebuilts_check_for_uncached
 $(strip \
     $(eval lst := ) \
-    $(foreach var, $(2), \
+    $(foreach var, $(strip $2), \
         $(if $(shell find $(1) -name \*.mk | xargs grep $(var)), \
             $(eval lst += $($(var))))) \
     $(if $(subst $(space),-,$(strip $(lst))), \
         $(subst $(space),-,$(strip $(lst)))-) \
+)
+endef
+
+# Same as prebuilts_check_for_uncached, except caches results
+# to speed up multiple subsequent invocations.
+#
+# Parameters:
+#   $(1):	LOCAL_PATH of the current module to check
+#   $(2):	List of make variables to check for.
+define prebuilts_check_for
+$(strip \
+  $(if $(PREBUILTS.$(strip $1).SPECIAL), , \
+    $(eval PREBUILTS.$(strip $1).SPECIAL := $(call prebuilts_check_for_uncached,$1,$2)) \
+    $(if $(PREBUILTS.$(strip $1).SPECIAL), , \
+      $(eval PREBUILTS.$(strip $1).SPECIAL := false) \
+    ) \
+  ) \
+  $(filter-out false,$(strip $(PREBUILTS.$(strip $1).SPECIAL))) \
 )
 endef
 
@@ -137,7 +155,7 @@ endef
 #
 # Parameters:
 #   $(1):	Path
-define prebuilts-git-revs-for
+define prebuilts-git-revs-for-uncached
 $(strip \
   $(eval my_git_rev := $(call prebuilts-git-rev,$(1))) \
   $(eval my_git_subdirs := $(call prebuilts-git-subdirs,$(1))) \
@@ -151,16 +169,37 @@ $(strip \
 )
 endef
 
+define prebuilts-git-revs-for
+$(strip \
+  $(if $(PREBUILTS.$(strip $1).GITREVS), , \
+    $(eval PREBUILTS.$(strip $1).GITREVS := $(call prebuilts-git-revs-for-uncached,$1)) \
+  ) \
+  $(PREBUILTS.$(strip $1).GITREVS) \
+)
+endef
+
 # Get dirty state of all repositories under a given path,
 # including the path itself.
 #
 # Parameters:
 #   $(1):	Path
-define prebuilts-git-dirty-for
+define prebuilts-git-dirty-for-uncached
 $(strip \
   $(eval my_git_subdirs := $(call prebuilts-git-subdirs,$(1))) \
   $(call prebuilts-git-dirty,$(1))$(foreach d,$(my_git_subdirs),$(call prebuilts-git-dirty,$(d))) \
   $(eval my_git_subdirs := ) \
+)
+endef
+
+define prebuilts-git-dirty-for
+$(strip \
+  $(if $(PREBUILTS.$(strip $1).GITDIRTY), , \
+    $(eval PREBUILTS.$(strip $1).GITDIRTY := $(call prebuilts-git-dirty-for-uncached,$1)) \
+    $(if $(PREBUILTS.$(strip $1).GITDIRTY), , \
+      $(eval PREBUILTS.$(strip $1).GITDIRTY := false) \
+    ) \
+  ) \
+  $(filter-out false,$(strip $(PREBUILTS.$(strip $1).GITDIRTY))) \
 )
 endef
 
