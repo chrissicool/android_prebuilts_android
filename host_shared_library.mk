@@ -15,5 +15,9 @@
 include $(PREBUILTS_ORIGINAL_BUILD_HOST_SHARED_LIBRARY)
 
 ifndef LOCAL_PREBUILT_MODULE_FILE
+ifdef my_prebuilts_module_file
 $(eval $(call prebuilts_cache_file, $(my_prebuilts_module_file), $(LOCAL_INSTALLED_MODULE)))
 endif
+endif
+
+my_prebuilts_module_file :=
